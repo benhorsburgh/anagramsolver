@@ -28,19 +28,20 @@ class Dictionary:
             cur = cur.children[letter]
         return cur.is_word
 
-    def solve_word(self, letters: str, node: Node = None):
+    def solve_word(self, letters: str, node: Node = None, partial: bool = False):
         """
         Generate anagrams of the input letters
         Args:
             letters: string of characters from which to generate anagram words
             node: (optional) starting point in the dictionary. Defaults to root
+            partial: (optional) if partial anagrams are permitted. Defaults to False
 
         Returns:
             Generator of anagrams
         """
         node = node or self.root
 
-        if len(letters) == 0 and node.is_word:
+        if node.is_word and (len(letters) == 0 or partial):
             yield ""
 
         seen_letters = []
@@ -49,7 +50,9 @@ class Dictionary:
             if letter in node.children and letter not in seen_letters:
                 seen_letters.append(letter)
                 for suffix in self.solve_word(
-                    letters[:i] + letters[i + 1 :], node.children[letter]
+                    letters[:i] + letters[i + 1 :],
+                    node=node.children[letter],
+                    partial=partial,
                 ):
                     word = letter + suffix
                     if word not in seen_words:

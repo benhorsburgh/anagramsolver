@@ -34,5 +34,18 @@ def test_solve_word(dictionary, letters, solutions):
     assert len(solutions) == len(found)
 
 
+@pytest.mark.parametrize(
+    "letters, solutions",
+    [
+        ("pur", ["p", "pu", "pur", "u", "up", "ur", "r"]),
+        ("red", ["r", "re", "red", "e", "er", "erd", "ed", "d", "de"]),
+    ],
+)
+def test_solve_word_partial(dictionary, letters, solutions):
+    found = list(dictionary.solve_word(letters, partial=True))
+    assert all(solution in found for solution in solutions)
+    assert len(solutions) == len(found)
+
+
 def test_performance(dictionary):
     assert len(list(dictionary.solve_word("basiparachromatin"))) == 2
